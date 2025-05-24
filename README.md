@@ -75,8 +75,8 @@ func (f *FirstResultGroup[T]) GetResult(done <-chan struct{}) (T, error) {
 			}
 
 		case <-done:
-			f.cancel()
 			if f.has.CompareAndSwap(false, true) {
+				f.cancel()
 				f.err = fmt.Errorf("自定义上下结束")
 				return
 			}
