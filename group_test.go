@@ -17,18 +17,21 @@ func TestGetIp(t *testing.T) {
 		data, err := GetIPFromIPify(ctx)
 		return data, err == nil
 	}, func(data string) {
+		fmt.Println("没有被采用的结果",data)
 	})
 
 	f.Go(func(ctx context.Context) (string, bool) {
 		data, err := GetIPFromIPInfo(ctx)
 		return data, err == nil
 	}, func(data string) {
+		fmt.Println("没有被采用的结果",data)
 	})
 
 	f.Go(func(ctx context.Context) (string, bool) {
 		data, err := GetIPFromIcanhazip(ctx)
 		return data, err == nil
 	}, func(data string) {
+		fmt.Println("没有被采用的结果",data)
 	})
 
 	fmt.Println(f.GetResult(context.Background().Done()))
