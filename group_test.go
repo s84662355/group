@@ -1,17 +1,17 @@
-package main
+package group
 
 import (
 	"context"
 	"fmt"
 	"io"
 	"net/http"
+	"testing"
 	"time"
-
-	"github.com/s84662355/group"
 )
 
-func main() {
-	f := group.NewFirstResultGroup[string]()
+// / go test -run TestGetIp
+func TestGetIp(t *testing.T) {
+	f := NewFirstResultGroup[string]()
 
 	f.Go(func(ctx context.Context) (string, bool) {
 		data, err := GetIPFromIPify(ctx)

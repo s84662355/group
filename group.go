@@ -8,8 +8,8 @@ import (
 )
 
 type (
-	A[T any] func(ctx context.Context) (T, bool)
-	B[T any] func(t T)
+	A[T any] func(ctx context.Context) (T, bool) ///任务函数
+	B[T any] func(t T)                           // 当任务执行成功，但是结果没有被采纳就会执行
 )
 
 type FirstResultGroup[T any] struct {
