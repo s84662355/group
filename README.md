@@ -86,8 +86,8 @@ func (f *FirstResultGroup[T]) GetResult(done <-chan struct{}) (T, error) {
 	<-f.ctx.Done()
 	return f.result, f.err
 }
-
-```shell
+```
+ 
 
 
 
