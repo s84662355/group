@@ -34,7 +34,9 @@ func TestGetIp(t *testing.T) {
 		fmt.Println("没有被采用的结果", data)
 	})
 
-	fmt.Println(f.GetResult(context.Background().Done()))
+	ctx, _ := context.WithTimeout(context.Background(), 550*time.Millisecond)
+
+	fmt.Println(f.GetResult(ctx.Done()))
 }
 
 // GetIPFromIPify 通过ipify.org获取公网IP
