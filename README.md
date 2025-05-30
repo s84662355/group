@@ -5,6 +5,7 @@
 
 ## 源码
 ```shell
+
 package group
 
 import (
@@ -29,9 +30,9 @@ type FirstResultGroup[T any] struct {
 	doOne  sync.Once
 }
 
-func NewFirstResultGroup[T any]() *FirstResultGroup[T] {
+func NewFirstResultGroup[T any](ctx context.Context) *FirstResultGroup[T] {
 	f := &FirstResultGroup[T]{}
-	f.ctx, f.cancel = context.WithCancel(context.Background())
+	f.ctx, f.cancel = context.WithCancel(ctx)
 
 	return f
 }
@@ -52,7 +53,7 @@ func (f *FirstResultGroup[T]) Go(a A[T], b B[T]) {
 	}()
 }
 
-func (f *FirstResultGroup[T]) GetResult(done <-chan struct{}) (T, error) {
+func (f *FirstResultGroup[T]) GetResult() (T, error) {
 	f.doOne.Do(func() {
 		d := make(chan struct{})
 		defer func() {
@@ -73,19 +74,15 @@ func (f *FirstResultGroup[T]) GetResult(done <-chan struct{}) (T, error) {
 				f.err = fmt.Errorf("任务失败")
 				return
 			}
-
-		case <-done:
-			if f.has.CompareAndSwap(false, true) {
-				f.cancel()
-				f.err = fmt.Errorf("自定义上下结束")
-				return
-			}
-
 		}
 	})
-	<-f.ctx.Done()
 	return f.result, f.err
 }
+
+
+
+
+
 ```
  
 

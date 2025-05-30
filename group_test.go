@@ -11,7 +11,8 @@ import (
 
 // / go test -run TestGetIp
 func TestGetIp(t *testing.T) {
-	f := NewFirstResultGroup[string]()
+	ctx, _ := context.WithTimeout(context.Background(), 1000*time.Millisecond)
+	f := NewFirstResultGroup[string](ctx)
 
 	f.Go(func(ctx context.Context) (string, bool) {
 		data, err := GetIPFromIPify(ctx)
@@ -34,9 +35,7 @@ func TestGetIp(t *testing.T) {
 		fmt.Println("没有被采用的结果", data)
 	})
 
-	ctx, _ := context.WithTimeout(context.Background(), 550*time.Millisecond)
-
-	fmt.Println(f.GetResult(ctx.Done()))
+	fmt.Println(f.GetResult())
 }
 
 // GetIPFromIPify 通过ipify.org获取公网IP
