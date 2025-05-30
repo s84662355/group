@@ -111,7 +111,8 @@ import (
 )
 
 func main() {
-	f := group.NewFirstResultGroup[string]()
+	ctx, _ := context.WithTimeout(context.Background(), 1000*time.Millisecond)
+	f := NewFirstResultGroup[string](ctx)
 
 	f.Go(func(ctx context.Context) (string, bool) {
 		data, err := GetIPFromIPify(ctx)
@@ -131,7 +132,7 @@ func main() {
 	}, func(data string) {
 	})
 
-	fmt.Println(f.GetResult(context.Background().Done()))
+	fmt.Println(f.GetResult())
 }
 
 // GetIPFromIPify 通过ipify.org获取公网IP
