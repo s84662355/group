@@ -38,7 +38,9 @@ func (f *FirstResultGroup[T]) Go(a A[T], b B[T]) {
 				f.result = r
 				f.cancel()
 			} else {
-				b(r)
+				if b != nil {
+					b(r)
+				}
 			}
 		}
 	}()
