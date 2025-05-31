@@ -20,14 +20,11 @@ type FirstResultGroup[T any] struct {
 	cancel context.CancelFunc
 	wg     sync.WaitGroup
 	doOne  sync.Once
-	done   chan struct{}
 }
 
 func NewFirstResultGroup[T any](ctx context.Context) *FirstResultGroup[T] {
 	f := &FirstResultGroup[T]{}
 	f.ctx, f.cancel = context.WithCancel(ctx)
-	f.done = make(chan struct{})
-
 	return f
 }
 
@@ -39,7 +36,6 @@ func (f *FirstResultGroup[T]) Go(a A[T], b B[T]) {
 		if ok {
 			if f.has.CompareAndSwap(false, true) {
 				f.result = r
-				close(f.done)
 				f.cancel()
 			} else {
 				b(r)
@@ -50,28 +46,10 @@ func (f *FirstResultGroup[T]) Go(a A[T], b B[T]) {
 
 func (f *FirstResultGroup[T]) GetResult() (T, error) {
 	f.doOne.Do(func() {
-		d := make(chan struct{})
-		defer func() {
-			for range d {
-				/* code */
-			}
-		}()
-		go func() {
-			defer close(d)
-			f.wg.Wait()
-			f.cancel()
-		}()
-		select {
-		case <-f.ctx.Done():
-			if !f.has.CompareAndSwap(false, true) {
-				return
-			} else {
-				f.err = fmt.Errorf("任务失败")
-				close(f.done)
-				return
-			}
+		f.wg.Wait()
+		if f.has.CompareAndSwap(false, true) {
+			f.err = fmt.Errorf("任务失败")
 		}
 	})
-	<-f.done
 	return f.result, f.err
 }

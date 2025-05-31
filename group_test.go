@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-// / go test -run TestGetIp
+// go test -run TestGetIp
 func TestGetIp(t *testing.T) {
-	ctx, _ := context.WithTimeout(context.Background(), 1000*time.Millisecond)
+	ctx, _ := context.WithTimeout(context.Background(), 580*time.Millisecond)
 	f := NewFirstResultGroup[string](ctx)
 
 	f.Go(func(ctx context.Context) (string, bool) {
