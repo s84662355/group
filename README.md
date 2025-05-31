@@ -6,7 +6,6 @@
 ## 源码
 ```shell
 
-
 package group
 
 import (
@@ -64,8 +63,6 @@ func (f *FirstResultGroup[T]) GetResult() (T, error) {
 	})
 	return f.result, f.err
 }
-
- 
 
 
 
