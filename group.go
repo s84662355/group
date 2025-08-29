@@ -2,10 +2,12 @@ package group
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"sync/atomic"
+	"errors"
 )
+
+var ErrTaskFailed = errors.New("task failed")
 
 type (
 	A[T any] func(ctx context.Context) (T, bool) ///任务函数
@@ -50,7 +52,7 @@ func (f *FirstResultGroup[T]) GetResult() (T, error) {
 	f.doOne.Do(func() {
 		f.wg.Wait()
 		if f.has.CompareAndSwap(false, true) {
-			f.err = fmt.Errorf("任务失败")
+			f.err = ErrTaskFailed
 		}
 	})
 	return f.result, f.err
